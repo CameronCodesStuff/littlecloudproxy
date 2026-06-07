@@ -70,9 +70,17 @@ body::before {
   border-right: 1px solid var(--border);
   margin-right: 2px;
   flex-shrink: 0;
-  cursor: default;
+  cursor: pointer;
   user-select: none;
+  background: none;
+  border: none;
+  border-right: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 4px 14px 4px 4px;
+  transition: background .12s;
 }
+
+#logo:hover { background: var(--sky2); }
 
 #logo-img {
   width: 44px;
@@ -366,6 +374,51 @@ body::before {
 }
 .bc5::before { width: 38px; height: 40px; bottom: 10px; left: 6px; }
 .bc5::after  { width: 44px; height: 44px; bottom: 8px; left: 30px; }
+
+.bc6 {
+  width: 190px; height: 62px;
+  top: 85%; left: -50px;
+  opacity: .65;
+  animation: drift1 36s linear infinite 2s;
+}
+.bc6::before { width: 80px; height: 82px; bottom: 24px; left: 12px; }
+.bc6::after  { width: 94px; height: 90px; bottom: 20px; left: 64px; }
+
+.bc7 {
+  width: 130px; height: 42px;
+  top: 48%; right: 5%;
+  opacity: .55;
+  animation: drift2 29s linear infinite 7s;
+}
+.bc7::before { width: 54px; height: 56px; bottom: 16px; left: 8px; }
+.bc7::after  { width: 62px; height: 60px; bottom: 12px; left: 42px; }
+
+.bc8 {
+  width: 80px; height: 26px;
+  top: 15%; left: 35%;
+  opacity: .45;
+  animation: drift2 18s linear infinite 3s;
+}
+.bc8::before { width: 34px; height: 36px; bottom: 8px; left: 4px; }
+.bc8::after  { width: 38px; height: 38px; bottom: 6px; left: 26px; }
+
+.bc9 {
+  width: 160px; height: 52px;
+  top: 92%; right: 15%;
+  opacity: .6;
+  animation: drift2 42s linear infinite 16s;
+}
+.bc9::before { width: 66px; height: 68px; bottom: 20px; left: 10px; }
+.bc9::after  { width: 76px; height: 74px; bottom: 16px; left: 52px; }
+
+.bc10 {
+  width: 70px; height: 24px;
+  top: 30%; left: 12%;
+  opacity: .4;
+  animation: drift1 16s linear infinite 9s;
+}
+.bc10::before { width: 30px; height: 32px; bottom: 8px; left: 4px; }
+.bc10::after  { width: 34px; height: 34px; bottom: 6px; left: 22px; }
 
 @keyframes drift1 {
   from { transform: translateX(0); }
