@@ -12,21 +12,7 @@
 <!-- ── TOP BAR ── -->
 <div id="bar">
   <div id="logo">
-    <svg id="logo-svg" viewBox="0 0 64 44" xmlns="http://www.w3.org/2000/svg">
-      <!-- back cloud -->
-      <g>
-        <path d="M44 38 Q32 38 28 34 Q22 34 20 29 Q16 29 16 24 Q16 18 22 17 Q23 12 29 11 Q35 8 41 12 Q47 10 50 15 Q56 14 58 20 Q62 21 62 26 Q62 32 56 34 Q54 38 44 38Z" fill="#c8dff5" stroke="#2a4a7a" stroke-width="2" stroke-linejoin="round"/>
-        <path d="M28 16 Q34 13 40 15 Q46 13 50 17 Q54 16 57 20" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
-        <path d="M22 24 Q28 21 34 23" fill="none" stroke="white" stroke-width="1.2" stroke-linecap="round" opacity="0.6"/>
-        <path d="M20 31 Q32 36 52 33" fill="none" stroke="#7ab8e8" stroke-width="1.5" stroke-linecap="round" opacity="0.8"/>
-      </g>
-      <!-- front cloud -->
-      <g>
-        <path d="M30 44 Q18 44 14 40 Q8 40 6 35 Q2 34 2 29 Q2 23 8 22 Q10 17 16 17 Q21 14 27 17 Q32 15 36 19 Q40 18 42 23 Q46 24 46 29 Q46 35 40 37 Q38 44 30 44Z" fill="white" stroke="#2a4a7a" stroke-width="2" stroke-linejoin="round"/>
-        <path d="M10 26 Q16 22 22 24 Q27 21 33 23" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" opacity="0.9"/>
-        <path d="M8 33 Q18 38 38 36" fill="none" stroke="#7ab8e8" stroke-width="1.5" stroke-linecap="round" opacity="0.8"/>
-      </g>
-    </svg>
+    <img src="favicon.png" id="logo-img" alt="Little Cloud Proxy">
     <div id="logo-text">
       <strong>Little Cloud</strong>
       <small>Proxy</small>
@@ -79,68 +65,14 @@
 
   <!-- SPLASH -->
   <div id="splash">
-    <!-- drifting background clouds (SVG comic style) -->
-    <svg class="bg-cloud bc1" viewBox="0 0 200 90" xmlns="http://www.w3.org/2000/svg">
-      <path d="M160 80 Q110 82 80 74 Q50 74 40 62 Q20 62 16 50 Q10 48 10 38 Q10 26 22 24 Q25 14 38 12 Q52 6 66 13 Q78 8 90 14 Q106 8 118 16 Q132 10 144 18 Q158 14 166 24 Q178 22 184 32 Q192 34 192 46 Q192 60 178 66 Q172 80 160 80Z" fill="#daeeff" stroke="#2a4a7a" stroke-width="2.5" stroke-linejoin="round"/>
-      <path d="M30 36 Q50 28 70 33 Q90 26 110 31 Q130 24 150 30" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" opacity="0.8"/>
-      <path d="M18 50 Q60 58 120 55 Q160 58 188 50" fill="none" stroke="#7ab8e8" stroke-width="2" stroke-linecap="round" opacity="0.7"/>
-    </svg>
+    <div class="bg-cloud bc1"></div>
+    <div class="bg-cloud bc2"></div>
+    <div class="bg-cloud bc3"></div>
+    <div class="bg-cloud bc4"></div>
+    <div class="bg-cloud bc5"></div>
 
-    <svg class="bg-cloud bc2" viewBox="0 0 160 72" xmlns="http://www.w3.org/2000/svg">
-      <path d="M126 64 Q88 66 64 58 Q40 58 32 48 Q16 48 12 38 Q8 36 8 28 Q8 18 18 16 Q21 8 32 7 Q44 2 56 8 Q66 4 76 10 Q90 5 102 12 Q116 8 124 16 Q136 14 142 22 Q150 24 150 34 Q150 46 138 52 Q134 64 126 64Z" fill="white" stroke="#2a4a7a" stroke-width="2.5" stroke-linejoin="round"/>
-      <path d="M22 26 Q42 19 60 24 Q78 18 96 23 Q114 17 130 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" opacity="0.9"/>
-      <path d="M14 38 Q50 46 100 43 Q130 46 148 38" fill="none" stroke="#7ab8e8" stroke-width="2" stroke-linecap="round" opacity="0.7"/>
-    </svg>
-
-    <svg class="bg-cloud bc3" viewBox="0 0 140 62" xmlns="http://www.w3.org/2000/svg">
-      <path d="M108 54 Q76 56 56 50 Q34 50 26 40 Q12 40 10 32 Q6 30 6 22 Q6 14 14 12 Q17 6 26 5 Q36 1 46 6 Q56 2 64 7 Q76 3 86 9 Q98 5 106 12 Q116 10 122 18 Q130 20 130 28 Q130 40 118 44 Q114 54 108 54Z" fill="#daeeff" stroke="#2a4a7a" stroke-width="2" stroke-linejoin="round"/>
-      <path d="M18 20 Q34 14 50 18 Q66 13 82 17 Q98 12 112 18" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" opacity="0.8"/>
-      <path d="M12 32 Q44 39 86 37 Q110 39 126 32" fill="none" stroke="#7ab8e8" stroke-width="1.8" stroke-linecap="round" opacity="0.7"/>
-    </svg>
-
-    <svg class="bg-cloud bc4" viewBox="0 0 120 54" xmlns="http://www.w3.org/2000/svg">
-      <path d="M94 46 Q66 48 48 42 Q28 42 22 34 Q10 33 8 25 Q5 23 5 17 Q5 10 12 9 Q15 4 23 3 Q32 0 41 5 Q50 1 57 6 Q67 2 76 8 Q87 4 93 11 Q102 9 107 16 Q114 17 114 25 Q114 34 104 38 Q100 46 94 46Z" fill="white" stroke="#2a4a7a" stroke-width="2" stroke-linejoin="round"/>
-      <path d="M15 15 Q28 10 42 14 Q55 9 68 13 Q80 8 92 13" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" opacity="0.9"/>
-      <path d="M10 25 Q36 32 72 30 Q92 32 110 25" fill="none" stroke="#7ab8e8" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
-    </svg>
-
-    <svg class="bg-cloud bc5" viewBox="0 0 100 46" xmlns="http://www.w3.org/2000/svg">
-      <path d="M78 38 Q54 40 40 35 Q22 35 18 27 Q8 26 6 19 Q4 17 4 13 Q4 7 10 6 Q12 2 19 1 Q27 -1 34 3 Q42 0 48 4 Q57 1 64 6 Q73 3 78 9 Q86 8 90 14 Q96 15 96 21 Q96 29 86 32 Q83 38 78 38Z" fill="#daeeff" stroke="#2a4a7a" stroke-width="2" stroke-linejoin="round"/>
-      <path d="M12 11 Q24 6 36 10 Q47 6 58 9 Q68 5 78 10" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" opacity="0.8"/>
-      <path d="M8 21 Q30 27 60 25 Q76 27 92 21" fill="none" stroke="#7ab8e8" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
-    </svg>
-
-    <!-- hero cloud group with sun peeking behind -->
     <div class="hero-wrap">
-      <svg class="hero-svg" viewBox="0 0 220 160" xmlns="http://www.w3.org/2000/svg">
-        <!-- sun rays + body — rendered first so clouds sit on top -->
-        <g class="sun-group">
-          <!-- rays -->
-          <line x1="170" y1="44" x2="170" y2="28" stroke="#fdd96e" stroke-width="3" stroke-linecap="round"/>
-          <line x1="170" y1="44" x2="182" y2="32" stroke="#fdd96e" stroke-width="3" stroke-linecap="round"/>
-          <line x1="170" y1="44" x2="186" y2="44" stroke="#fdd96e" stroke-width="3" stroke-linecap="round"/>
-          <line x1="170" y1="44" x2="182" y2="56" stroke="#fdd96e" stroke-width="3" stroke-linecap="round"/>
-          <line x1="170" y1="44" x2="158" y2="32" stroke="#fdd96e" stroke-width="3" stroke-linecap="round"/>
-          <line x1="170" y1="44" x2="154" y2="44" stroke="#fdd96e" stroke-width="3" stroke-linecap="round"/>
-          <!-- sun body -->
-          <circle cx="170" cy="44" r="20" fill="#fdd96e" stroke="#e8a000" stroke-width="2"/>
-          <circle cx="170" cy="44" r="20" fill="url(#sunGlow)"/>
-        </g>
-        <defs>
-          <radialGradient id="sunGlow" cx="40%" cy="35%">
-            <stop offset="0%" stop-color="white" stop-opacity="0.4"/>
-            <stop offset="100%" stop-color="white" stop-opacity="0"/>
-          </radialGradient>
-        </defs>
-        <!-- back cloud -->
-        <path d="M155 130 Q105 132 78 122 Q50 122 42 108 Q22 107 18 93 Q12 90 12 78 Q12 64 26 61 Q30 49 46 47 Q62 41 78 49 Q92 43 106 51 Q124 43 138 53 Q154 46 164 58 Q178 55 184 67 Q194 70 194 84 Q194 100 178 108 Q170 130 155 130Z" fill="#c8dff5" stroke="#2a4a7a" stroke-width="2.5" stroke-linejoin="round"/>
-        <path d="M32 74 Q56 64 78 70 Q100 62 122 68 Q144 60 164 68" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" opacity="0.8"/>
-        <path d="M20 93 Q70 105 130 101 Q165 105 190 93" fill="none" stroke="#7ab8e8" stroke-width="2" stroke-linecap="round" opacity="0.8"/>
-        <!-- front cloud -->
-        <path d="M128 150 Q78 153 52 142 Q24 142 16 128 Q4 127 2 112 Q-2 109 -2 96 Q-2 80 14 77 Q18 63 36 61 Q54 54 72 63 Q88 56 104 65 Q122 57 138 67 Q154 61 164 73 Q176 70 180 83 Q188 86 188 100 Q188 118 170 126 Q160 150 128 150Z" fill="white" stroke="#2a4a7a" stroke-width="2.5" stroke-linejoin="round"/>
-        <path d="M18 92 Q44 80 68 87 Q90 79 114 85 Q136 78 158 86" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" opacity="0.9"/>
-        <path d="M4 112 Q52 126 116 122 Q152 126 184 112" fill="none" stroke="#7ab8e8" stroke-width="2.5" stroke-linecap="round" opacity="0.8"/>
-      </svg>
+      <img src="favicon.png" class="hero-img" alt="Little Cloud">
     </div>
 
     <h1>Little Cloud <span>Proxy</span></h1>
