@@ -1,434 +1,118 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Little Cloud Proxy</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Little Cloud Proxy</title>
   <link rel="icon" type="image/png" href="favicon.png">
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Nunito:wght@400;600;700;800;900&display=swap');
-
-  :root {
-    --bg: #e8f0fe;
-    --surface: #f4f7ff;
-    --surface2: #dce6fb;
-    --border: #c5d3f5;
-    --accent: #4a7fff;
-    --accent2: #7ab3ff;
-    --cloud: #ffffff;
-    --text: #1a2744;
-    --muted: #7a8fb5;
-    --bar-h: 56px;
-    --shadow: 0 2px 12px rgba(74,127,255,.10);
-  }
-
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  body {
-    font-family: 'Nunito', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-  }
-
-  /* soft cloud background pattern on the splash only */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    background-image:
-      radial-gradient(ellipse 320px 180px at 10% 20%, rgba(255,255,255,.7) 0%, transparent 70%),
-      radial-gradient(ellipse 260px 140px at 85% 70%, rgba(200,220,255,.5) 0%, transparent 70%),
-      radial-gradient(ellipse 200px 120px at 55% 10%, rgba(255,255,255,.6) 0%, transparent 70%);
-    z-index: 0;
-  }
-
-  /* ── TOP BAR ── */
-  #bar {
-    height: var(--bar-h);
-    background: var(--cloud);
-    border-bottom: 1.5px solid var(--border);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 0 14px;
-    flex-shrink: 0;
-    z-index: 10;
-    box-shadow: var(--shadow);
-  }
-
-  /* ☁ logo */
-  #logo {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    white-space: nowrap;
-    padding-right: 12px;
-    border-right: 1.5px solid var(--border);
-    margin-right: 2px;
-    flex-shrink: 0;
-  }
-  #logo-cloud {
-    font-size: 22px;
-    line-height: 1;
-    filter: drop-shadow(0 1px 2px rgba(74,127,255,.25));
-  }
-  #logo-text {
-    font-size: 12px;
-    font-weight: 900;
-    letter-spacing: .04em;
-    color: var(--accent);
-    line-height: 1.1;
-  }
-  #logo-text span {
-    display: block;
-    font-weight: 600;
-    font-size: 9.5px;
-    color: var(--muted);
-    letter-spacing: .08em;
-    text-transform: uppercase;
-  }
-
-  .nav-btn {
-    background: none;
-    border: none;
-    color: var(--muted);
-    cursor: pointer;
-    width: 32px;
-    height: 32px;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background .15s, color .15s;
-    flex-shrink: 0;
-  }
-  .nav-btn:hover { background: var(--surface2); color: var(--accent); }
-  .nav-btn:disabled { opacity: .3; cursor: default; }
-  .nav-btn svg { width: 16px; height: 16px; }
-
-  #url-wrap {
-    flex: 1;
-    position: relative;
-    display: flex;
-    align-items: center;
-  }
-
-  #lock-icon {
-    position: absolute;
-    left: 11px;
-    color: var(--accent2);
-    pointer-events: none;
-    display: flex;
-  }
-  #lock-icon svg { width: 13px; height: 13px; }
-
-  #url-input {
-    width: 100%;
-    height: 36px;
-    background: var(--surface);
-    border: 1.5px solid var(--border);
-    border-radius: 20px;
-    color: var(--text);
-    font-family: 'DM Mono', monospace;
-    font-size: 12px;
-    padding: 0 62px 0 32px;
-    outline: none;
-    transition: border-color .15s, box-shadow .15s;
-  }
-  #url-input:focus {
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(74,127,255,.12);
-  }
-  #url-input::placeholder { color: var(--muted); }
-
-  #go-btn {
-    position: absolute;
-    right: 5px;
-    background: var(--accent);
-    border: none;
-    color: #fff;
-    font-family: 'Nunito', sans-serif;
-    font-size: 11px;
-    font-weight: 800;
-    letter-spacing: .06em;
-    padding: 5px 13px;
-    border-radius: 16px;
-    cursor: pointer;
-    transition: background .15s, transform .1s;
-  }
-  #go-btn:hover { background: #3366e0; transform: scale(1.03); }
-  #go-btn:active { transform: scale(.97); }
-
-  #status-pill {
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    color: var(--muted);
-    white-space: nowrap;
-    padding: 4px 10px;
-    border-radius: 20px;
-    border: 1.5px solid var(--border);
-    min-width: 64px;
-    text-align: center;
-    transition: color .2s, border-color .2s, background .2s;
-    background: var(--surface);
-  }
-  #status-pill.loading { color: #e07b00; border-color: #f5a623; background: #fff8ee; }
-  #status-pill.ok      { color: #1a8c52; border-color: #4caf7d; background: #edfaf3; }
-  #status-pill.err     { color: #c0284a; border-color: #f06080; background: #fff0f3; }
-
-  /* ── FRAME ── */
-  #frame-wrap {
-    flex: 1;
-    position: relative;
-    background: #fff;
-    z-index: 1;
-  }
-
-  #proxy-frame {
-    width: 100%;
-    height: 100%;
-    border: none;
-    display: block;
-  }
-
-  /* ── SPLASH ── */
-  #splash {
-    position: absolute;
-    inset: 0;
-    background: transparent;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 18px;
-    z-index: 5;
-  }
-
-  /* animated cloud cluster */
-  .cloud-hero {
-    position: relative;
-    width: 140px;
-    height: 80px;
-    margin-bottom: 4px;
-  }
-  .cloud-hero .c {
-    position: absolute;
-    background: white;
-    border-radius: 50px;
-    box-shadow: 0 4px 20px rgba(74,127,255,.18);
-  }
-  .cloud-hero .c1 { width: 100px; height: 44px; bottom: 0; left: 20px; }
-  .cloud-hero .c2 { width: 60px;  height: 40px; bottom: 22px; left: 10px; border-radius: 50%; }
-  .cloud-hero .c3 { width: 70px;  height: 46px; bottom: 20px; left: 48px; border-radius: 50%; }
-  .cloud-hero .c4 { width: 44px;  height: 36px; bottom: 30px; left: 82px; border-radius: 50%; }
-  .cloud-hero { animation: float 4s ease-in-out infinite; }
-  @keyframes float {
-    0%,100% { transform: translateY(0); }
-    50%      { transform: translateY(-8px); }
-  }
-
-  #splash h1 {
-    font-size: 32px;
-    font-weight: 900;
-    letter-spacing: -.02em;
-    color: var(--accent);
-    line-height: 1;
-  }
-  #splash h1 em {
-    font-style: normal;
-    color: var(--muted);
-    font-weight: 600;
-    font-size: 22px;
-  }
-  #splash p {
-    color: var(--muted);
-    font-size: 13.5px;
-    font-weight: 600;
-  }
-
-  #splash .quick-links {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    justify-content: center;
-    max-width: 480px;
-  }
-  #splash .ql {
-    background: var(--cloud);
-    border: 1.5px solid var(--border);
-    color: var(--text);
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    padding: 6px 14px;
-    border-radius: 20px;
-    cursor: pointer;
-    transition: border-color .15s, color .15s, box-shadow .15s;
-    text-decoration: none;
-    box-shadow: 0 1px 4px rgba(74,127,255,.07);
-  }
-  #splash .ql:hover {
-    border-color: var(--accent);
-    color: var(--accent);
-    box-shadow: 0 2px 10px rgba(74,127,255,.15);
-  }
-
-  /* ── BLOCKED NOTICE ── */
-  #blocked-notice {
-    display: none;
-    position: absolute;
-    inset: 0;
-    background: var(--bg);
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 14px;
-    z-index: 6;
-    text-align: center;
-    padding: 40px;
-  }
-  #blocked-notice.visible { display: flex; }
-  #blocked-notice .rain-cloud { font-size: 52px; margin-bottom: 4px; }
-  #blocked-notice h2 { font-size: 20px; font-weight: 900; color: var(--text); }
-  #blocked-notice p { color: var(--muted); font-size: 13px; max-width: 440px; line-height: 1.65; font-weight: 600; }
-  #blocked-notice code {
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    background: var(--cloud);
-    border: 1.5px solid var(--border);
-    border-radius: 5px;
-    padding: 2px 7px;
-    color: var(--accent);
-  }
-  #open-external-btn {
-    background: var(--accent);
-    border: none;
-    color: #fff;
-    font-family: 'Nunito', sans-serif;
-    font-weight: 800;
-    font-size: 13px;
-    padding: 10px 26px;
-    border-radius: 20px;
-    cursor: pointer;
-    margin-top: 4px;
-    transition: background .15s, transform .1s;
-    box-shadow: 0 3px 12px rgba(74,127,255,.3);
-  }
-  #open-external-btn:hover { background: #3366e0; transform: scale(1.03); }
-
-  /* ── LOADING BAR ── */
-  #loading-bar {
-    position: absolute;
-    top: 0; left: 0;
-    height: 3px;
-    width: 0%;
-    background: linear-gradient(90deg, var(--accent), var(--accent2), #a8d0ff);
-    z-index: 20;
-    pointer-events: none;
-    opacity: 0;
-    border-radius: 0 3px 3px 0;
-    transition: opacity .3s;
-  }
-  #loading-bar.running {
-    opacity: 1;
-    animation: loadpulse 1.6s ease-in-out infinite;
-  }
-  @keyframes loadpulse {
-    0%   { width: 0%;  }
-    60%  { width: 72%; }
-    100% { width: 92%; }
-  }
-  #loading-bar.done {
-    width: 100%;
-    animation: none;
-    opacity: 0;
-    transition: opacity .4s .15s;
-  }
-</style>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<!-- TOP BAR -->
+<!-- ── TOP BAR ── -->
 <div id="bar">
   <div id="logo">
-    <div id="logo-cloud">☁️</div>
+    <div class="logo-cloud-wrap">
+      <div class="lc lc1"></div>
+      <div class="lc lc2"></div>
+      <div class="lc lc3"></div>
+      <div class="lc lc4"></div>
+    </div>
     <div id="logo-text">
-      Little Cloud
-      <span>Proxy</span>
+      <strong>Little Cloud</strong>
+      <small>Proxy</small>
     </div>
   </div>
 
-  <button class="nav-btn" id="back-btn" title="Back" disabled>
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+  <button class="nb" id="back-btn" title="Back" disabled>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="15 18 9 12 15 6"/>
+    </svg>
   </button>
-  <button class="nav-btn" id="fwd-btn" title="Forward" disabled>
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+  <button class="nb" id="fwd-btn" title="Forward" disabled>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="9 18 15 12 9 6"/>
+    </svg>
   </button>
-  <button class="nav-btn" id="refresh-btn" title="Reload">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-      <polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/>
+  <button class="nb" id="refresh-btn" title="Reload">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="23 4 23 10 17 10"/>
+      <polyline points="1 20 1 14 7 14"/>
       <path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/>
     </svg>
   </button>
 
   <div id="url-wrap">
     <span id="lock-icon">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="11" width="18" height="11" rx="2"/>
         <path d="M7 11V7a5 5 0 0110 0v4"/>
       </svg>
     </span>
-    <input id="url-input" type="text" placeholder="Where do the clouds take you today?" autocomplete="off" spellcheck="false"/>
-    <button id="go-btn">FLY ☁</button>
+    <input id="url-input" type="text" placeholder="Where shall we float today?" autocomplete="off" spellcheck="false"/>
+    <button id="go-btn"><span class="go-cloud">☁</span> FLY</button>
   </div>
 
-  <div id="status-pill">—</div>
+  <div id="pill">—</div>
 
-  <button class="nav-btn" id="open-btn" title="Open real URL in new tab">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+  <button id="open-btn" title="Open in new tab">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
       <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/>
-      <polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>
+      <polyline points="15 3 21 3 21 9"/>
+      <line x1="10" y1="14" x2="21" y2="3"/>
     </svg>
   </button>
 </div>
 
-<!-- FRAME AREA -->
+<!-- ── MAIN ── -->
 <div id="frame-wrap">
-  <div id="loading-bar"></div>
+  <div id="load-bar"></div>
 
+  <!-- SPLASH -->
   <div id="splash">
-    <div class="cloud-hero">
-      <div class="c c1"></div>
-      <div class="c c2"></div>
-      <div class="c c3"></div>
-      <div class="c c4"></div>
+    <div class="bg-cloud bc1"></div>
+    <div class="bg-cloud bc2"></div>
+    <div class="bg-cloud bc3"></div>
+
+    <div class="hero-cloud">
+      <div class="sun"></div>
+      <div class="h h1"></div>
+      <div class="h h2"></div>
+      <div class="h h3"></div>
+      <div class="h h4"></div>
     </div>
-    <h1>Little Cloud <em>Proxy</em></h1>
-    <p>Floating above the web, one page at a time ☁️</p>
-    <div class="quick-links">
+
+    <h1>Little Cloud <span>Proxy</span></h1>
+    <p class="tagline">Floating above the web, one page at a time ✦</p>
+
+    <div class="qlinks">
       <a class="ql" data-url="https://google.com">google.com</a>
       <a class="ql" data-url="https://wikipedia.org">wikipedia.org</a>
       <a class="ql" data-url="https://news.ycombinator.com">hacker news</a>
       <a class="ql" data-url="https://reddit.com">reddit.com</a>
       <a class="ql" data-url="https://github.com">github.com</a>
-      <a class="ql" data-url="https://duckduckgo.com">duckduckgo.com</a>
+      <a class="ql" data-url="https://duckduckgo.com">duckduckgo</a>
     </div>
   </div>
 
-  <div id="blocked-notice">
-    <div class="rain-cloud">🌧️</div>
-    <h2>This site won't let us in</h2>
+  <!-- BLOCKED -->
+  <div id="blocked">
+    <div class="rain-icon">
+      <div class="rc rc1"></div>
+      <div class="rc rc2"></div>
+      <div class="rc rc3"></div>
+      <div class="drop"></div>
+      <div class="drop"></div>
+      <div class="drop"></div>
+      <div class="drop"></div>
+    </div>
+    <h2>This cloud got rained out</h2>
     <p>
-      The site is blocking embedding via <code>X-Frame-Options</code> or
+      The site is blocking embedding with <code>X-Frame-Options</code> or
       <code>Content-Security-Policy: frame-ancestors</code>.
-      Your Cloudflare Worker needs to strip those headers to fix this.
-      You can still visit it directly:
+      Make sure your Cloudflare Worker strips those headers from responses.
     </p>
-    <button id="open-external-btn">Open in new tab ↗</button>
+    <button id="ext-btn">Open directly ↗</button>
   </div>
 
   <iframe id="proxy-frame"
@@ -436,119 +120,6 @@
   ></iframe>
 </div>
 
-<script>
-const PROXY = 'https://little-cloud-efc0.detlaffcameron.workers.dev/';
-
-const frame      = document.getElementById('proxy-frame');
-const urlInput   = document.getElementById('url-input');
-const goBtn      = document.getElementById('go-btn');
-const backBtn    = document.getElementById('back-btn');
-const fwdBtn     = document.getElementById('fwd-btn');
-const refreshBtn = document.getElementById('refresh-btn');
-const openBtn    = document.getElementById('open-btn');
-const splash     = document.getElementById('splash');
-const pill       = document.getElementById('status-pill');
-const loadBar    = document.getElementById('loading-bar');
-const blockedEl  = document.getElementById('blocked-notice');
-const openExtBtn = document.getElementById('open-external-btn');
-
-let navHistory = [];
-let histIdx    = -1;
-let currentRaw = '';
-
-function ensureScheme(url) {
-  url = url.trim();
-  if (!url) return '';
-  if (/^https?:\/\//i.test(url)) return url;
-  return 'https://' + url;
-}
-function toProxy(url) { return PROXY + url; }
-function fromProxy(src) {
-  if (src && src.startsWith(PROXY)) return src.slice(PROXY.length);
-  return src;
-}
-
-function setLoading(on) {
-  if (on) {
-    pill.textContent = 'loading…';
-    pill.className   = 'loading';
-    loadBar.className = 'running';
-  } else {
-    pill.textContent = 'ready ☁';
-    pill.className   = 'ok';
-    loadBar.className = 'done';
-  }
-}
-function setError() {
-  pill.textContent = 'blocked 🌧';
-  pill.className   = 'err';
-  loadBar.className = 'done';
-}
-
-function navigate(rawUrl, push = true) {
-  rawUrl = ensureScheme(rawUrl);
-  if (!rawUrl) return;
-  currentRaw = rawUrl;
-  urlInput.value = rawUrl;
-  blockedEl.classList.remove('visible');
-  splash.style.display = 'none';
-  setLoading(true);
-  if (push) {
-    navHistory = navHistory.slice(0, histIdx + 1);
-    navHistory.push(rawUrl);
-    histIdx = navHistory.length - 1;
-  }
-  updateNavBtns();
-  frame.src = toProxy(rawUrl);
-}
-
-function updateNavBtns() {
-  backBtn.disabled = histIdx <= 0;
-  fwdBtn.disabled  = histIdx >= navHistory.length - 1;
-}
-
-frame.addEventListener('load', () => {
-  setLoading(false);
-  if (!frame.src || frame.src === 'about:blank') return;
-  const raw = fromProxy(frame.src);
-  if (raw) {
-    currentRaw = raw;
-    urlInput.value = raw;
-    if (navHistory[histIdx] !== raw) navHistory[histIdx] = raw;
-  }
-});
-
-frame.addEventListener('error', () => {
-  setError();
-  blockedEl.classList.add('visible');
-});
-
-window.addEventListener('message', (e) => {
-  if (!e.origin.includes('detlaffcameron.workers.dev') &&
-      e.origin !== window.location.origin) return;
-  const { type, url } = e.data || {};
-  if (type === 'navigate' && url) navigate(url);
-  if (type === 'title' && e.data.title)
-    document.title = e.data.title + ' — Little Cloud Proxy';
-});
-
-goBtn.addEventListener('click', () => navigate(urlInput.value));
-urlInput.addEventListener('keydown', e => { if (e.key === 'Enter') navigate(urlInput.value); });
-backBtn.addEventListener('click', () => {
-  if (histIdx > 0) { histIdx--; navigate(navHistory[histIdx], false); updateNavBtns(); }
-});
-fwdBtn.addEventListener('click', () => {
-  if (histIdx < navHistory.length - 1) { histIdx++; navigate(navHistory[histIdx], false); updateNavBtns(); }
-});
-refreshBtn.addEventListener('click', () => { if (currentRaw) navigate(currentRaw, false); });
-openBtn.addEventListener('click', () => { if (currentRaw) window.open(currentRaw, '_blank'); });
-openExtBtn.addEventListener('click', () => { if (currentRaw) window.open(currentRaw, '_blank'); });
-
-document.querySelectorAll('.ql').forEach(el => {
-  el.addEventListener('click', e => { e.preventDefault(); navigate(el.dataset.url); });
-});
-
-urlInput.focus();
-</script>
+<script src="proxy.js"></script>
 </body>
 </html>
