@@ -90,6 +90,8 @@ window.addEventListener('message', e => {
   if (type === 'title'    && title) document.title = title + ' — Little Cloud Proxy';
 });
 
+const logoBtn = document.getElementById('logo');
+
 goBtn.addEventListener('click',   () => go(input.value));
 input.addEventListener('keydown', e  => { if (e.key === 'Enter') go(input.value); });
 
@@ -103,6 +105,16 @@ fwdBtn.addEventListener('click', () => {
 refBtn.addEventListener('click',  () => { if (cur) go(cur, false); });
 openBtn.addEventListener('click', () => { if (cur) window.open(cur, '_blank'); });
 extBtn.addEventListener('click',  () => { if (cur) window.open(cur, '_blank'); });
+logoBtn.addEventListener('click', () => {
+  frame.src           = 'about:blank';
+  splash.style.display = 'flex';
+  blocked.classList.remove('show');
+  input.value         = '';
+  cur                 = '';
+  pill.textContent    = '—';
+  pill.className      = '';
+  bar.className       = '';
+});
 
 document.querySelectorAll('.ql').forEach(el =>
   el.addEventListener('click', e => {
@@ -112,14 +124,3 @@ document.querySelectorAll('.ql').forEach(el =>
 );
 
 input.focus();
-
-function goHome() {
-  frame.src = "about:blank";
-  splash.style.display = "flex";
-  blocked.classList.remove("show");
-  input.value = "";
-  cur = "";
-  pill.textContent = "—";
-  pill.className = "";
-  bar.className = "";
-}
