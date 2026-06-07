@@ -73,8 +73,7 @@ body::before {
   user-select: none;
   background: none;
   border: none;
-  border-right: 1px solid var(--border);
-  border-radius: 8px 0 0 8px;
+  border-radius: 8px;
   transition: background .12s;
   font-family: inherit;
   text-align: left;
@@ -321,16 +320,18 @@ body::before {
 .bg-cloud {
   position: absolute;
   pointer-events: none;
-  background: rgba(255,255,255,.55);
+  background: rgba(255,255,255,.78);
   border-radius: 50px;
+  box-shadow: 0 2px 8px rgba(100,160,220,.12), inset 0 -3px 0 rgba(180,215,245,.5);
 }
 
 .bg-cloud::before,
 .bg-cloud::after {
   content: '';
   position: absolute;
-  background: inherit;
+  background: rgba(255,255,255,.82);
   border-radius: 50%;
+  box-shadow: inherit;
 }
 
 .bc1 {
@@ -362,7 +363,7 @@ body::before {
 .bc4 {
   width: 110px; height: 36px;
   top: 74%; left: 18%;
-  opacity: .55;
+  opacity: .7;
   animation: drift2 48s linear infinite 10s;
 }
 .bc4::before { width: 46px; height: 48px; bottom: 14px; left: 6px; }
@@ -371,7 +372,7 @@ body::before {
 .bc5 {
   width: 90px; height: 30px;
   top: 40%; left: 52%;
-  opacity: .5;
+  opacity: .68;
   animation: drift1 22s linear infinite 14s;
 }
 .bc5::before { width: 38px; height: 40px; bottom: 10px; left: 6px; }
@@ -380,7 +381,7 @@ body::before {
 .bc6 {
   width: 190px; height: 62px;
   top: 85%; left: -50px;
-  opacity: .65;
+  opacity: .8;
   animation: drift1 36s linear infinite 2s;
 }
 .bc6::before { width: 80px; height: 82px; bottom: 24px; left: 12px; }
@@ -389,7 +390,7 @@ body::before {
 .bc7 {
   width: 130px; height: 42px;
   top: 48%; right: 5%;
-  opacity: .55;
+  opacity: .72;
   animation: drift2 29s linear infinite 7s;
 }
 .bc7::before { width: 54px; height: 56px; bottom: 16px; left: 8px; }
@@ -398,7 +399,7 @@ body::before {
 .bc8 {
   width: 80px; height: 26px;
   top: 15%; left: 35%;
-  opacity: .45;
+  opacity: .62;
   animation: drift2 18s linear infinite 3s;
 }
 .bc8::before { width: 34px; height: 36px; bottom: 8px; left: 4px; }
@@ -407,7 +408,7 @@ body::before {
 .bc9 {
   width: 160px; height: 52px;
   top: 92%; right: 15%;
-  opacity: .6;
+  opacity: .75;
   animation: drift2 42s linear infinite 16s;
 }
 .bc9::before { width: 66px; height: 68px; bottom: 20px; left: 10px; }
@@ -416,7 +417,7 @@ body::before {
 .bc10 {
   width: 70px; height: 24px;
   top: 30%; left: 12%;
-  opacity: .4;
+  opacity: .58;
   animation: drift1 16s linear infinite 9s;
 }
 .bc10::before { width: 30px; height: 32px; bottom: 8px; left: 4px; }
