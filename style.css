@@ -66,8 +66,7 @@ body::before {
   display: flex;
   align-items: center;
   gap: 7px;
-  padding-right: 14px;
-  border-right: 1px solid var(--border);
+  padding: 4px 14px 4px 6px;
   margin-right: 2px;
   flex-shrink: 0;
   cursor: pointer;
@@ -75,21 +74,24 @@ body::before {
   background: none;
   border: none;
   border-right: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 4px 14px 4px 4px;
+  border-radius: 8px 0 0 8px;
   transition: background .12s;
+  font-family: inherit;
+  text-align: left;
 }
 
-#logo:hover { background: var(--sky2); }
+#logo:hover  { background: var(--sky2); }
+#logo:active { background: var(--sky2); opacity: .8; }
 
 #logo-img {
-  width: 44px;
-  height: 44px;
+  width: 36px;
+  height: 36px;
   object-fit: contain;
   flex-shrink: 0;
+  pointer-events: none;
 }
 
-#logo-text { line-height: 1.1; }
+#logo-text { line-height: 1.1; pointer-events: none; }
 
 #logo-text strong {
   display: block;
