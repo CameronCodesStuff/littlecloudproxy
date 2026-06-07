@@ -112,3 +112,14 @@ document.querySelectorAll('.ql').forEach(el =>
 );
 
 input.focus();
+
+function goHome() {
+  frame.src = "about:blank";
+  splash.style.display = "flex";
+  blocked.classList.remove("show");
+  input.value = "";
+  cur = "";
+  pill.textContent = "—";
+  pill.className = "";
+  bar.className = "";
+}
