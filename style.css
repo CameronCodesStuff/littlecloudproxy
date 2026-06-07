@@ -74,9 +74,10 @@ body::before {
   user-select: none;
 }
 
-#logo-svg {
-  width: 52px;
-  height: 36px;
+#logo-img {
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
   flex-shrink: 0;
 }
 
@@ -310,14 +311,61 @@ body::before {
 .bg-cloud {
   position: absolute;
   pointer-events: none;
-  overflow: visible;
+  background: rgba(255,255,255,.55);
+  border-radius: 50px;
 }
 
-.bc1 { width: 260px; top: 8%;  left: -80px;  animation: drift1 30s linear infinite; opacity: .9; }
-.bc2 { width: 210px; top: 55%; right: -60px; animation: drift2 38s linear infinite; opacity: .85; }
-.bc3 { width: 180px; top: 20%; right: 10%;   animation: drift1 24s linear infinite 4s; opacity: .7; }
-.bc4 { width: 155px; top: 70%; left: 20%;    animation: drift2 44s linear infinite 8s; opacity: .75; }
-.bc5 { width: 130px; top: 38%; left: 55%;    animation: drift1 20s linear infinite 12s; opacity: .6; }
+.bg-cloud::before,
+.bg-cloud::after {
+  content: '';
+  position: absolute;
+  background: inherit;
+  border-radius: 50%;
+}
+
+.bc1 {
+  width: 220px; height: 70px;
+  top: 8%; left: -60px;
+  animation: drift1 32s linear infinite;
+}
+.bc1::before { width: 90px; height: 90px; bottom: 28px; left: 14px; }
+.bc1::after  { width: 110px; height: 100px; bottom: 24px; left: 70px; }
+
+.bc2 {
+  width: 170px; height: 54px;
+  top: 62%; right: -50px;
+  opacity: .7;
+  animation: drift2 40s linear infinite;
+}
+.bc2::before { width: 70px; height: 72px; bottom: 22px; left: 10px; }
+.bc2::after  { width: 84px; height: 80px; bottom: 18px; left: 56px; }
+
+.bc3 {
+  width: 140px; height: 46px;
+  top: 22%; right: 8%;
+  opacity: .6;
+  animation: drift1 26s linear infinite 5s;
+}
+.bc3::before { width: 58px; height: 60px; bottom: 18px; left: 8px; }
+.bc3::after  { width: 68px; height: 66px; bottom: 14px; left: 46px; }
+
+.bc4 {
+  width: 110px; height: 36px;
+  top: 74%; left: 18%;
+  opacity: .55;
+  animation: drift2 48s linear infinite 10s;
+}
+.bc4::before { width: 46px; height: 48px; bottom: 14px; left: 6px; }
+.bc4::after  { width: 54px; height: 52px; bottom: 10px; left: 36px; }
+
+.bc5 {
+  width: 90px; height: 30px;
+  top: 40%; left: 52%;
+  opacity: .5;
+  animation: drift1 22s linear infinite 14s;
+}
+.bc5::before { width: 38px; height: 40px; bottom: 10px; left: 6px; }
+.bc5::after  { width: 44px; height: 44px; bottom: 8px; left: 30px; }
 
 @keyframes drift1 {
   from { transform: translateX(0); }
@@ -331,13 +379,13 @@ body::before {
 .hero-wrap {
   flex-shrink: 0;
   animation: float 5s ease-in-out infinite;
-  filter: drop-shadow(0 8px 18px rgba(42,74,122,.22));
+  filter: drop-shadow(0 8px 18px rgba(42,74,122,.18));
 }
 
-.hero-svg {
-  width: 220px;
-  height: 160px;
-  overflow: visible;
+.hero-img {
+  width: 180px;
+  height: 180px;
+  object-fit: contain;
 }
 
 .sun-group {
