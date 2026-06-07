@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Proxy</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;700;800&display=swap');
+
+  :root {
+    --bg: #0d0d0f;
+    --surface: #141418;
+    --border: #222228;
+    --accent: #7c6aff;
+    --accent2: #ff6a9b;
+    --text: #e8e8f0;
+    --muted: #6b6b80;
+    --bar-h: 52px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Syne', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  #bar {
+    height: var(--bar-h);
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 12px;
+    flex-shrink: 0;
+    z-index: 10;
+  }
+
+  #logo {
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: .08em;
+    color: var(--accent);
+    white-space: nowrap;
+    padding-right: 8px;
+    border-right: 1px solid var(--border);
+    margin-right: 4px;
+    text-transform: uppercase;
+  }
+
+  .nav-btn {
+    background: none;
+    border: none;
+    color: var(--muted);
+    cursor: pointer;
+    width: 30px;
+    height: 30px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background .15s, color .15s;
+    flex-shrink: 0;
+  }
+  .nav-btn:hover { background: var(--border); color: var(--text); }
+  .nav-btn:disabled { opacity: .3; cursor: default; }
+  .nav-btn svg { width: 16px; height: 16px; }
+
+  #url-wrap {
+    flex: 1;
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  #lock-icon {
+    position: absolute;
+    left: 10px;
+    color: var(--muted);
+    pointer-events: none;
+    display: flex;
+  }
+  #lock-icon svg { width: 13px; height: 13px; }
+
+  #url-input {
+    width: 100%;
+    height: 34px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 12.5px;
+    padding: 0 56px 0 30px;
+    outline: none;
+    transition: border-color .15s;
+  }
+  #url-input:focus { border-color: var(--accent); }
+  #url-input::placeholder { color: var(--muted); }
+
+  #go-btn {
+    position: absolute;
+    right: 6px;
+    background: var(--accent);
+    border: none;
+    color: #fff;
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .05em;
+    padding: 4px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: opacity .15s;
+  }
+  #go-btn:hover { opacity: .85; }
+
+  #status-pill {
+    font-family: 'DM Mono', monospace;
+    font-size: 10.5px;
+    color: var(--muted);
+    white-space: nowrap;
+    padding: 3px 8px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    min-width: 60px;
+    text-align: center;
+    transition: color .2s, border-color .2s;
+  }
+  #status-pill.loading { color: #f5a623; border-color: #f5a623; }
+  #status-pill.ok      { color: #4caf7d; border-color: #4caf7d; }
+  #status-pill.err     { color: var(--accent2); border-color: var(--accent2); }
+
+  #frame-wrap {
+    flex: 1;
+    position: relative;
+    background: #fff;
+  }
+
+  #proxy-frame {
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block;
+  }
+
+  /* ── SPLASH ── */
+  #splash {
+    position: absolute;
+    inset: 0;
+    background: var(--bg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    z-index: 5;
+  }
+  #splash h1 {
+    font-size: 38px;
+    font-weight: 800;
+    letter-spacing: -.02em;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  #splash p { color: var(--muted); font-size: 14px; }
+  #splash .quick-links {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 500px;
+  }
+  #splash .ql {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 11.5px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: border-color .15s, color .15s;
+    text-decoration: none;
+  }
+  #splash .ql:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ── blocked notice ── */
+  #blocked-notice {
+    display: none;
+    position: absolute;
+    inset: 0;
+    background: var(--bg);
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    z-index: 6;
+    text-align: center;
+    padding: 40px;
+  }
+  #blocked-notice.visible { display: flex; }
+  #blocked-notice h2 { font-size: 22px; font-weight: 800; color: var(--accent2); }
+  #blocked-notice p { color: var(--muted); font-size: 13px; max-width: 460px; line-height: 1.6; }
+  #blocked-notice code {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 2px 6px;
+    color: var(--accent);
+  }
+  #open-external-btn {
+    background: var(--accent);
+    border: none;
+    color: #fff;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    padding: 10px 24px;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 6px;
+    transition: opacity .15s;
+  }
+  #open-external-btn:hover { opacity: .85; }
+
+  /* loading bar */
+  #loading-bar {
+    position: absolute;
+    top: 0; left: 0;
+    height: 2px;
+    width: 0%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    z-index: 20;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity .3s;
+  }
+  #loading-bar.running {
+    opacity: 1;
+    animation: loadpulse 1.4s ease-in-out infinite;
+  }
+  @keyframes loadpulse {
+    0%   { width: 0%;  }
+    60%  { width: 75%; }
+    100% { width: 95%; }
+  }
+  #loading-bar.done {
+    width: 100%;
+    animation: none;
+    opacity: 0;
+    transition: opacity .4s .1s;
+  }
+</style>
+</head>
+<body>
+
+<div id="bar">
+  <span id="logo">Proxy</span>
+
+  <button class="nav-btn" id="back-btn" title="Back" disabled>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+  </button>
+  <button class="nav-btn" id="fwd-btn" title="Forward" disabled>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+  </button>
+  <button class="nav-btn" id="refresh-btn" title="Reload">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/>
+      <path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/>
+    </svg>
+  </button>
+
+  <div id="url-wrap">
+    <span id="lock-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+        <path d="M7 11V7a5 5 0 0110 0v4"/>
+      </svg>
+    </span>
+    <input id="url-input" type="text" placeholder="Enter a URL to browse…" autocomplete="off" spellcheck="false"/>
+    <button id="go-btn">GO</button>
+  </div>
+
+  <div id="status-pill">—</div>
+
+  <button class="nav-btn" id="open-btn" title="Open in new tab">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/>
+      <polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>
+    </svg>
+  </button>
+</div>
+
+<div id="frame-wrap">
+  <div id="loading-bar"></div>
+
+  <div id="splash">
+    <h1>Proxy</h1>
+    <p>Type a URL above or pick a quick link</p>
+    <div class="quick-links">
+      <a class="ql" data-url="https://google.com">google.com</a>
+      <a class="ql" data-url="https://wikipedia.org">wikipedia.org</a>
+      <a class="ql" data-url="https://news.ycombinator.com">hacker news</a>
+      <a class="ql" data-url="https://reddit.com">reddit.com</a>
+      <a class="ql" data-url="https://github.com">github.com</a>
+      <a class="ql" data-url="https://duckduckgo.com">duckduckgo.com</a>
+    </div>
+  </div>
+
+  <!-- shown when a site blocks framing -->
+  <div id="blocked-notice">
+    <h2>Site blocked framing</h2>
+    <p>
+      This site sends a <code>X-Frame-Options</code> or <code>Content-Security-Policy: frame-ancestors</code>
+      header that prevents it from being embedded. To fix this your Cloudflare Worker needs to
+      strip those headers from responses. You can still open the page directly:
+    </p>
+    <button id="open-external-btn">Open in new tab ↗</button>
+  </div>
+
+  <!--
+    NO allow-same-origin — prevents the iframe from accessing parent document.
+    allow-forms lets form submits work.
+    allow-popups lets window.open() inside pages work; allow-popups-to-escape-sandbox
+    means those popups are NOT sandboxed (so they behave like normal tabs).
+    allow-top-navigation-by-user-activation lets the page navigate the top frame
+    only on a real user gesture — we intercept this with postMessage instead.
+  -->
+  <iframe id="proxy-frame"
+    sandbox="allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox"
+  ></iframe>
+</div>
+
+<script>
+const PROXY = 'https://little-cloud-efc0.detlaffcameron.workers.dev/';
+
+const frame      = document.getElementById('proxy-frame');
+const urlInput   = document.getElementById('url-input');
+const goBtn      = document.getElementById('go-btn');
+const backBtn    = document.getElementById('back-btn');
+const fwdBtn     = document.getElementById('fwd-btn');
+const refreshBtn = document.getElementById('refresh-btn');
+const openBtn    = document.getElementById('open-btn');
+const splash     = document.getElementById('splash');
+const pill       = document.getElementById('status-pill');
+const loadBar    = document.getElementById('loading-bar');
+const blockedEl  = document.getElementById('blocked-notice');
+const openExtBtn = document.getElementById('open-external-btn');
+
+let navHistory = [];
+let histIdx    = -1;
+let currentRaw = '';  // the real (non-proxied) URL currently loaded
+
+// ── Helpers ──────────────────────────────────────────────────────────────────
+
+function ensureScheme(url) {
+  url = url.trim();
+  if (!url) return '';
+  if (/^https?:\/\//i.test(url)) return url;
+  // treat bare domains as https
+  return 'https://' + url;
+}
+
+function toProxy(url) {
+  return PROXY + url;
+}
+
+function fromProxy(src) {
+  // strip the proxy prefix to get the original URL
+  if (src && src.startsWith(PROXY)) return src.slice(PROXY.length);
+  return src;
+}
+
+// ── Loading state ─────────────────────────────────────────────────────────────
+
+function setLoading(on) {
+  if (on) {
+    pill.textContent = 'loading';
+    pill.className   = 'loading';
+    loadBar.className = 'running';
+  } else {
+    pill.textContent = 'ready';
+    pill.className   = 'ok';
+    loadBar.className = 'done';
+  }
+}
+
+function setError() {
+  pill.textContent = 'blocked';
+  pill.className   = 'err';
+  loadBar.className = 'done';
+}
+
+// ── Navigation ────────────────────────────────────────────────────────────────
+
+function navigate(rawUrl, push = true) {
+  rawUrl = ensureScheme(rawUrl);
+  if (!rawUrl) return;
+
+  currentRaw = rawUrl;
+  urlInput.value = rawUrl;
+  blockedEl.classList.remove('visible');
+  splash.style.display = 'none';
+  setLoading(true);
+
+  if (push) {
+    navHistory = navHistory.slice(0, histIdx + 1);
+    navHistory.push(rawUrl);
+    histIdx = navHistory.length - 1;
+  }
+  updateNavBtns();
+
+  // Set iframe src to the proxied URL
+  frame.src = toProxy(rawUrl);
+}
+
+function updateNavBtns() {
+  backBtn.disabled = histIdx <= 0;
+  fwdBtn.disabled  = histIdx >= navHistory.length - 1;
+}
+
+// ── Iframe events ─────────────────────────────────────────────────────────────
+
+frame.addEventListener('load', () => {
+  setLoading(false);
+
+  // When the iframe loads about:blank (initial state) skip
+  if (!frame.src || frame.src === 'about:blank') return;
+
+  // Inject a small script via srcdoc trick won't work without allow-same-origin.
+  // Instead we use a Service Worker approach — but the simplest reliable method
+  // for a single HTML file is to re-write the page through the worker with an
+  // injected <base> tag + link-rewriting script baked into the HTML by the worker.
+  //
+  // For now: we CAN'T access iframe internals without allow-same-origin (by design).
+  // The correct solution is to have the Cloudflare Worker rewrite all href/src/action
+  // attributes in the HTML it returns so they already point back through the proxy.
+  // The script below is a best-effort attempt using postMessage for pages that
+  // happen to allow it.
+
+  // Notify the bar that we loaded
+  const proxiedSrc = frame.src;
+  const raw = fromProxy(proxiedSrc);
+  if (raw) {
+    currentRaw = raw;
+    urlInput.value = raw;
+    if (navHistory[histIdx] !== raw) navHistory[histIdx] = raw;
+  }
+});
+
+// Detect framing blocks: if the frame errors or stays on chrome-error page
+frame.addEventListener('error', () => {
+  setError();
+  blockedEl.classList.add('visible');
+});
+
+// Heuristic: if the frame src is still the proxy URL but the actual content
+// ended up on chrome-error://, the load event fires with an error page.
+// We detect this by checking for a very fast load of the error page.
+let loadStart = 0;
+const origNavigate = navigate;
+
+// Wrap navigate to track timing
+function navigateWrapped(rawUrl, push = true) {
+  loadStart = Date.now();
+  origNavigate(rawUrl, push);
+}
+
+// Override with wrapped version
+window.navigate = navigateWrapped;
+
+frame.addEventListener('load', () => {
+  // If load fires extremely fast (<100ms) with no content, likely a block
+  const elapsed = Date.now() - loadStart;
+  if (elapsed < 150 && loadStart > 0) {
+    // Could be a block, but also could be a cache hit — don't auto-flag
+  }
+  loadStart = 0;
+});
+
+// ── postMessage: receive navigation events from injected worker script ────────
+// If the worker injects a script that sends postMessage on link click, catch here.
+window.addEventListener('message', (e) => {
+  // Only trust messages from our proxy origin
+  if (!e.origin.includes('detlaffcameron.workers.dev') &&
+      e.origin !== window.location.origin) return;
+
+  const { type, url } = e.data || {};
+  if (type === 'navigate' && url) {
+    navigate(url);
+  }
+  if (type === 'title' && e.data.title) {
+    document.title = e.data.title + ' — Proxy';
+  }
+});
+
+// ── Controls ──────────────────────────────────────────────────────────────────
+
+goBtn.addEventListener('click', () => navigate(urlInput.value));
+urlInput.addEventListener('keydown', e => {
+  if (e.key === 'Enter') navigate(urlInput.value);
+});
+
+backBtn.addEventListener('click', () => {
+  if (histIdx > 0) { histIdx--; navigate(navHistory[histIdx], false); updateNavBtns(); }
+});
+fwdBtn.addEventListener('click', () => {
+  if (histIdx < navHistory.length - 1) { histIdx++; navigate(navHistory[histIdx], false); updateNavBtns(); }
+});
+refreshBtn.addEventListener('click', () => {
+  if (currentRaw) navigate(currentRaw, false);
+});
+openBtn.addEventListener('click', () => {
+  if (currentRaw) window.open(currentRaw, '_blank');
+});
+openExtBtn.addEventListener('click', () => {
+  if (currentRaw) window.open(currentRaw, '_blank');
+});
+
+// Quick links
+document.querySelectorAll('.ql').forEach(el => {
+  el.addEventListener('click', e => {
+    e.preventDefault();
+    navigate(el.dataset.url);
+  });
+});
+
+urlInput.focus();
+</script>
+</body>
+</html>
